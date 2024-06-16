@@ -3,7 +3,7 @@
 Plugin Name: Amazon Affiliate Tag
 Description: Añade automáticamente el tag de afiliado a todos los enlaces salientes a Amazon.es.
 Version: 1.0
-Author: Tu Nombre
+Author: Joel Pérez Miralles
 */
 
 // Función para añadir el menú de configuración
