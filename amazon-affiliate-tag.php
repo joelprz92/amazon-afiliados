@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Amazon Affiliate Tag
-Description: Añade automáticamente el tag de afiliado a todos los enlaces salientes a Amazon.es.
-Version: 1.0
+Description: Añade automáticamente el tag de afiliado a todos los enlaces salientes a Amazon.es y un shortcode para crear botones.
+Version: 1.1
 Author: Joel Pérez Miralles
 */
 
@@ -39,6 +39,14 @@ function aat_settings_init() {
         'pluginPage', 
         'aat_pluginPage_section' 
     );
+
+    add_settings_field( 
+        'aat_checkbox_field_2', 
+        __('Abrir en una nueva ventana (target="_blank")', 'wordpress'), 
+        'aat_checkbox_field_2_render', 
+        'pluginPage', 
+        'aat_pluginPage_section' 
+    );
 }
 
 add_action('admin_init', 'aat_settings_init');
@@ -51,7 +59,7 @@ function aat_text_field_0_render() {
     <?php
 }
 
-// Función para renderizar el checkbox
+// Función para renderizar el checkbox de nofollow
 function aat_checkbox_field_1_render() {
     $options = get_option('aat_settings');
     ?>
@@ -59,9 +67,19 @@ function aat_checkbox_field_1_render() {
     <?php
 }
 
+// Función para renderizar el checkbox de target blank
+function aat_checkbox_field_2_render() {
+    $options = get_option('aat_settings');
+    ?>
+    <input type='checkbox' name='aat_settings[aat_checkbox_field_2]' <?php checked(isset($options['aat_checkbox_field_2']) ? $options['aat_checkbox_field_2'] : 0, 1); ?> value='1'>
+    <?php
+}
+
+
+
 // Función de la sección de configuración
 function aat_settings_section_callback() {
-    echo __('Introduce tu tag de afiliado de Amazon y selecciona si deseas añadir rel="nofollow".', 'wordpress');
+    echo __('Introduce tu tag de afiliado de Amazon y selecciona las opciones deseadas.', 'wordpress');
 }
 
 // Función para renderizar la página de opciones
@@ -75,6 +93,7 @@ function aat_options_page() {
         submit_button();
         ?>
     </form>
+<br><br><p>Ejemplo para utilizar el shortcode:<br><br><br> <code>[amazon_button url="https://www.amazon.es/dp/B08JG8J1LN" text="Comprar en Amazon"]</code></p>
     <?php
 }
 
@@ -83,15 +102,16 @@ function add_affiliate_tag_to_amazon_links($content) {
     $options = get_option('aat_settings');
     $affiliate_tag = isset($options['aat_text_field_0']) ? $options['aat_text_field_0'] : '';
     $nofollow = !empty($options['aat_checkbox_field_1']) ? ' rel="nofollow"' : '';
+    $target_blank = !empty($options['aat_checkbox_field_2']) ? ' target="_blank"' : '';
 
     // Patrón para encontrar enlaces a Amazon.es y añadir el tag de afiliado
     $pattern = '/<a\s+(.*?)href=["\'](https:\/\/www\.amazon\.es\/.*?)(\?.*?)?["\']/i';
-    $replacement = function ($matches) use ($affiliate_tag, $nofollow) {
+    $replacement = function ($matches) use ($affiliate_tag, $nofollow, $target_blank) {
         $attributes = $matches[1];
         $url = $matches[2];
         $query = isset($matches[3]) ? $matches[3] : '';
         $separator = $query ? '&' : '?';
-        return '<a ' . $attributes . 'href="' . $url . $query . $separator . 'tag=' . $affiliate_tag . '"' . $nofollow ;
+        return '<a ' . $attributes . 'href="' . $url . $query . $separator . 'tag=' . $affiliate_tag . '"' . $nofollow . $target_blank;
     };
 
     // Reemplazar los enlaces en el contenido
@@ -102,4 +122,23 @@ function add_affiliate_tag_to_amazon_links($content) {
 add_filter('the_content', 'add_affiliate_tag_to_amazon_links');
 add_filter('widget_text', 'add_affiliate_tag_to_amazon_links');
 add_filter('widget_text_content', 'add_affiliate_tag_to_amazon_links');
+
+// Shortcode para crear el botón de Amazon
+function amazon_button_shortcode($atts) {
+    $options = get_option('aat_settings');
+    $affiliate_tag = isset($options['aat_text_field_0']) ? $options['aat_text_field_0'] : '';
+
+    $a = shortcode_atts(array(
+        'url' => 'https://www.amazon.es/',
+        'text' => 'Comprar en Amazon'
+    ), $atts);
+
+    $url = esc_url($a['url']) . '?tag=' . $affiliate_tag;
+    $text = esc_html($a['text']);
+
+    return '<a href="' . $url . '" target="_blank" rel="nofollow" style="display:inline-block;padding:10px 20px;font-size:16px;color:#fff;background-color:#ffa500;border:1px solid #ffa500;border-radius:4px;text-decoration:none;">
+        <img src="https://tusonrisa.org/wp-content/plugins/aawp/assets/img/icon-cart-black.svg" style="vertical-align:middle;margin-right:8px;width:20px;height:20px;" alt="Amazon icon">' . $text . '</a>';
+}
+
+add_shortcode('amazon_button', 'amazon_button_shortcode');
 ?>
