@@ -1,24 +1,32 @@
 # Amazon Affiliate Tag Plugin
 
-Este plugin de WordPress añade automáticamente un tag de afiliado a todos los enlaces salientes hacia Amazon.es en tu sitio web. También ofrece la opción de añadir el atributo `rel="nofollow"` a estos enlaces.
+**Versión**: 1.1  
+**Autor**: Joel Pérez Miralles
+
+## Descripción
+El plugin **Amazon Affiliate Tag** añade automáticamente el tag de afiliado a todos los enlaces salientes a Amazon.es y proporciona un shortcode para crear botones de compra.
 
 ## Características
-
-- Añade automáticamente el tag de afiliado a los enlaces de Amazon.es.
-- Opción para añadir `rel="nofollow"` a los enlaces.
-- Configuración sencilla desde el panel de administración de WordPress.
+- Añade automáticamente el tag de afiliado a todos los enlaces salientes a Amazon.es.
+- Opción para añadir `rel="nofollow"` a los enlaces de Amazon.
+- Opción para abrir los enlaces de Amazon en una nueva ventana (`target="_blank"`).
+- Shortcode para crear botones de compra personalizados.
 
 ## Instalación
-
-1. Descarga el archivo ZIP del plugin.
-2. Sube el archivo a la carpeta `wp-content/plugins/` de tu instalación de WordPress.
-3. Extrae el contenido del archivo ZIP en la carpeta `amazon-affiliate-tag`.
-4. Activa el plugin desde el menú "Plugins" en el panel de administración de WordPress.
-5. Configura el tag de afiliado y la opción `rel="nofollow"` en "Ajustes" > "Amazon Affiliate Tag".
+1. Descarga el plugin y sube los archivos a tu directorio de plugins de WordPress (`/wp-content/plugins/`).
+2. Activa el plugin desde el menú de `Plugins` en WordPress.
+3. Configura el plugin desde `Ajustes -> Amazon Affiliate Tag`.
 
 ## Uso
+### Configuración del Plugin
+1. Ve a `Ajustes -> Amazon Affiliate Tag`.
+2. Introduce tu tag de afiliado de Amazon en el campo correspondiente.
+3. Selecciona las opciones deseadas:
+   - Añadir `rel="nofollow"` a los enlaces de Amazon.
+   - Abrir los enlaces de Amazon en una nueva ventana.
 
-1. Navega a "Ajustes" > "Amazon Affiliate Tag".
-2. Introduce tu tag de afiliado de Amazon en el campo proporcionado.
-3. Marca la casilla si deseas añadir `rel="nofollow"` a los enlaces.
-4. Guarda los cambios.
+### Shortcode para Botones de Amazon
+Utiliza el siguiente shortcode para crear un botón de Amazon en tus publicaciones o páginas:
+
+```html
+[amazon_button url="https://www.amazon.es/dp/B08JG8J1LN" text="Comprar en Amazon"]
